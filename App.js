@@ -2,21 +2,28 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 
-let boxStyle = {
-  padding: 20,
-  margin: 20,
-  borderWidth: 1,
-  borderColor: 'red',
-};
+import styles from './App-styles';
 
-let textStyle = {
-  color: 'blue',
-};
+let contactList = [
+  {name: 'Ramzi', phoneNumber: '08123456789'},
+  {name: 'Indra', phoneNumber: '085551212098'},
+];
+
+function Contact(props) {
+  return (
+    <View style={styles.contact}>
+      <View style={styles.profilePhoto} />
+      <Text style={styles.contactName}>{props.contact.name}</Text>
+    </View>
+  );
+}
 
 function App() {
   return (
-    <View style={boxStyle}>
-      <Text style={textStyle}>Hello World!!!!</Text>
+    <View style={styles.container}>
+      {contactList.map(contact => (
+        <Contact key={contact.name} contact={contact} />
+      ))}
     </View>
   );
 }
