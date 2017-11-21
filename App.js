@@ -1,4 +1,4 @@
 // @flow
-import NumberListScene from './src/NumberListScene';
+import MainScene from './src/StopwatchScene';
 
-export default NumberListScene;
+export default MainScene;
