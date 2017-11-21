@@ -1,6 +1,8 @@
 // @flow
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Alert, Platform} from 'react-native';
+import Touchable from './src/Touchable';
+import Button from './src/Button';
 
 import styles from './App-styles';
 
@@ -17,11 +19,18 @@ function Contact(props) {
         <Text style={styles.letter}>{contact.name.charAt(0)}</Text>
       </View>
     ) : null;
+  let onPress = () => {
+    Alert.alert('Contact Pressed', `Phone number: ${contact.phoneNumber}`, [
+      {text: 'Dismiss'},
+    ]);
+  };
   return (
-    <View style={styles.contact}>
-      {profilePhoto}
-      <Text style={styles.contactName}>{contact.name}</Text>
-    </View>
+    <Touchable onPress={onPress}>
+      <View style={styles.contact}>
+        {profilePhoto}
+        <Text style={styles.contactName}>{contact.name}</Text>
+      </View>
+    </Touchable>
   );
 }
 
@@ -34,6 +43,7 @@ function App() {
       {contactList.map(contact => (
         <Contact key={contact.name} contact={contact} showPhoto={true} />
       ))}
+      <Button label="Add New" onPress={() => console.log('add new')} />
     </View>
   );
 }
