@@ -1,4 +1,4 @@
 // @flow
-import MainScene from './src/StopwatchScene';
+import MainScene from './src/RepoScene';
 
 export default MainScene;
