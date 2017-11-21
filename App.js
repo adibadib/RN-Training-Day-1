@@ -1,7 +1,4 @@
 // @flow
-import React from 'react';
-import CounterScene from './src/CounterScene';
+import NumberListScene from './src/NumberListScene';
 
-export default function App() {
-  return <CounterScene />;
-}
+export default NumberListScene;
