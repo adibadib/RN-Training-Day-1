@@ -10,10 +10,17 @@ let contactList = [
 ];
 
 function Contact(props) {
+  let {contact, showPhoto} = props;
+  let profilePhoto =
+    showPhoto === true ? (
+      <View style={styles.profilePhoto}>
+        <Text style={styles.letter}>{contact.name.charAt(0)}</Text>
+      </View>
+    ) : null;
   return (
     <View style={styles.contact}>
-      <View style={styles.profilePhoto} />
-      <Text style={styles.contactName}>{props.contact.name}</Text>
+      {profilePhoto}
+      <Text style={styles.contactName}>{contact.name}</Text>
     </View>
   );
 }
@@ -21,8 +28,11 @@ function Contact(props) {
 function App() {
   return (
     <View style={styles.container}>
+      <View style={styles.title}>
+        <Text style={styles.titleText}>Contact List</Text>
+      </View>
       {contactList.map(contact => (
-        <Contact key={contact.name} contact={contact} />
+        <Contact key={contact.name} contact={contact} showPhoto={true} />
       ))}
     </View>
   );
