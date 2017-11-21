@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import ContactListScene from './src/ContactListScene';
+import CounterScene from './src/CounterScene';
 
 export default function App() {
-  return <ContactListScene />;
+  return <CounterScene />;
 }
