@@ -4,30 +4,41 @@ import {Button, View, Text, Alert, Platform} from 'react-native';
 import Touchable from './Touchable';
 
 import styles from './CounterScene-styles';
+import Counter from './Counter';
 
 type Props = {};
 type State = {
-  count: number,
+  counterOne: number,
+  counterTwo: number,
 };
 
 class CounterScene extends Component<Props, State> {
   constructor() {
     super(...arguments);
     this.state = {
-      count: 0,
+      counterOne: 0,
+      counterTwo: 0,
     };
   }
 
   render() {
-    let buttonPressHandler = () => {
+    let resetHandler = () => {
       this.setState({
-        count: this.state.count + 1,
+        counterOne: 0,
+        counterTwo: 0,
       });
     };
     return (
       <View style={styles.container}>
-        <Text style={styles.counterText}>Count: {this.state.count}</Text>
-        <Button title="Increase Count" onPress={buttonPressHandler} />
+        <Counter
+          count={this.state.counterOne}
+          onPress={() => this.setState({counterOne: this.state.counterOne + 1})}
+        />
+        <Counter
+          count={this.state.counterTwo}
+          onPress={() => this.setState({counterTwo: this.state.counterTwo + 1})}
+        />
+        <Button title="Reset All" onPress={resetHandler} />
       </View>
     );
   }
