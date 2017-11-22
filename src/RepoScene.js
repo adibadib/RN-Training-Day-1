@@ -1,13 +1,20 @@
 // @flow
 import React, {Component} from 'react';
-import {View, Text, Button, ScrollView} from 'react-native';
-
-const USERNAME1 = 'danielsukmana';
-const USERNAME2 = 'sstur';
+import {
+  View,
+  Text,
+  Button,
+  ScrollView,
+  ActivityIndicator,
+  TextInput,
+  StyleSheet,
+} from 'react-native';
 
 type Props = {};
 type State = {
   repositories: Array<string>,
+  isLoading: boolean,
+  usernameText: string,
 };
 
 async function fetchRepositories(username: string) {
@@ -21,24 +28,39 @@ class RepoScene extends Component<Props, State> {
     super(...arguments);
     this.state = {
       repositories: [],
+      isLoading: false,
+      usernameText: '',
     };
   }
 
   async fetchNow() {
-    let [listOne, listTwo] = await Promise.all([
-      fetchRepositories(USERNAME1),
-      fetchRepositories(USERNAME2),
-    ]);
-    this.setState({
-      repositories: [...listOne, ...listTwo],
-    });
+    this.setState({isLoading: true});
+    let repositories = await fetchRepositories(this.state.usernameText);
+    this.setState({repositories: repositories, isLoading: false});
   }
 
   render() {
-    let repositories = this.state.repositories;
+    let {repositories, isLoading} = this.state;
+    if (isLoading) {
+      return (
+        <View style={{padding: 20}}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    }
     return (
       <View style={{backgroundColor: '#eee', padding: 20, flex: 1}}>
-        <Text>Repositories:</Text>
+        <TextInput
+          placeholder="Enter a username"
+          style={styles.textInput}
+          value={this.state.usernameText}
+          onChangeText={text => {
+            this.setState({
+              usernameText: text,
+            });
+          }}
+        />
+        <Text>Repositories for {this.state.usernameText}:</Text>
         {repositories.length === 0 ? <Text>Nothing to display</Text> : null}
         <ScrollView style={{flex: 1}}>
           {repositories.map((repoName, i) => <Text key={i}>{repoName}</Text>)}
@@ -48,5 +70,15 @@ class RepoScene extends Component<Props, State> {
     );
   }
 }
+
+let styles = StyleSheet.create({
+  textInput: {
+    height: 30,
+    borderWidth: 1,
+    borderColor: '#999',
+    paddingHorizontal: 3,
+    borderRadius: 2,
+  },
+});
 
 export default RepoScene;
