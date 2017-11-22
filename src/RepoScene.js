@@ -8,11 +8,18 @@ import {
   ActivityIndicator,
   TextInput,
   StyleSheet,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
+
+type RepoDetail = {
+  name: string,
+  description: string,
+};
 
 type Props = {};
 type State = {
-  repositories: Array<string>,
+  repositories: Array<RepoDetail>,
   isLoading: boolean,
   usernameText: string,
 };
@@ -20,7 +27,36 @@ type State = {
 async function fetchRepositories(username: string) {
   let response = await fetch(`https://api.github.com/users/${username}/repos`);
   let data = await response.json();
-  return data.map(repo => repo.name);
+  return data.map(repo => {
+    return {
+      name: repo.name,
+      description: repo.description,
+    };
+  });
+}
+
+type ListItemProps = {repo: RepoDetail};
+
+class RepoListItem extends Component<ListItemProps> {
+  componentDidMount() {
+    console.log(`Mounted: <RepoListItem repo={${this.props.repo.name}} />`);
+  }
+  componentWillUnmount() {
+    console.log('Unmount:', this.props.repo.name);
+  }
+  render() {
+    let repo = this.props.repo;
+    let onPress = () => {
+      Alert.alert(repo.name, repo.description, [{text: 'Close'}]);
+    };
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <View>
+          <Text>{repo.name}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 }
 
 class RepoScene extends Component<Props, State> {
@@ -50,20 +86,27 @@ class RepoScene extends Component<Props, State> {
     }
     return (
       <View style={{backgroundColor: '#eee', padding: 20, flex: 1}}>
-        <TextInput
-          placeholder="Enter a username"
-          style={styles.textInput}
-          value={this.state.usernameText}
-          onChangeText={text => {
-            this.setState({
-              usernameText: text,
-            });
-          }}
-        />
+        <View style={{flexDirection: 'row'}}>
+          <TextInput
+            placeholder="Enter a username"
+            style={styles.textInput}
+            value={this.state.usernameText}
+            onChangeText={text => {
+              this.setState({
+                usernameText: text.replace(/\W/g, ''),
+              });
+            }}
+          />
+          <Button
+            title="Clear"
+            style={{flex: 0}}
+            onPress={() => this.setState({usernameText: ''})}
+          />
+        </View>
         <Text>Repositories for {this.state.usernameText}:</Text>
         {repositories.length === 0 ? <Text>Nothing to display</Text> : null}
         <ScrollView style={{flex: 1}}>
-          {repositories.map((repoName, i) => <Text key={i}>{repoName}</Text>)}
+          {repositories.map((repo, i) => <RepoListItem key={i} repo={repo} />)}
         </ScrollView>
         <Button title="Fetch Data" onPress={() => this.fetchNow()} />
       </View>
@@ -78,6 +121,7 @@ let styles = StyleSheet.create({
     borderColor: '#999',
     paddingHorizontal: 3,
     borderRadius: 2,
+    flex: 1,
   },
 });
 
