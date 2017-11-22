@@ -2,12 +2,19 @@
 import React, {Component} from 'react';
 import {View, Text, Button, ScrollView} from 'react-native';
 
-const USERNAME = 'gaearon';
+const USERNAME1 = 'danielsukmana';
+const USERNAME2 = 'sstur';
 
 type Props = {};
 type State = {
   repositories: Array<string>,
 };
+
+async function fetchRepositories(username: string) {
+  let response = await fetch(`https://api.github.com/users/${username}/repos`);
+  let data = await response.json();
+  return data.map(repo => repo.name);
+}
 
 class RepoScene extends Component<Props, State> {
   constructor() {
@@ -18,12 +25,12 @@ class RepoScene extends Component<Props, State> {
   }
 
   async fetchNow() {
-    let response = await fetch(
-      `https://api.github.com/users/${USERNAME}/repos`,
-    );
-    let data = await response.json();
+    let [listOne, listTwo] = await Promise.all([
+      fetchRepositories(USERNAME1),
+      fetchRepositories(USERNAME2),
+    ]);
     this.setState({
-      repositories: data.map(repo => repo.name),
+      repositories: [...listOne, ...listTwo],
     });
   }
 
@@ -31,7 +38,7 @@ class RepoScene extends Component<Props, State> {
     let repositories = this.state.repositories;
     return (
       <View style={{backgroundColor: '#eee', padding: 20, flex: 1}}>
-        <Text>Repositories for {USERNAME}</Text>
+        <Text>Repositories:</Text>
         {repositories.length === 0 ? <Text>Nothing to display</Text> : null}
         <ScrollView style={{flex: 1}}>
           {repositories.map((repoName, i) => <Text key={i}>{repoName}</Text>)}
