@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {View, Text, Alert, Button, StyleSheet} from 'react-native';
 import Contact from './Contact';
 import CreateContactForm from './CreateContactForm';
+import dataStore from './dataStore';
 
 type ContactDetail = {
   name: string,
@@ -10,25 +11,16 @@ type ContactDetail = {
 };
 
 type Props = {};
-type State = {
-  contactList: Array<ContactDetail>,
-};
 
-class ContactListScene extends Component<Props, State> {
-  state = {
-    contactList: [
-      {name: 'Simon', phoneNumber: '+19135381260'},
-      {name: 'Joe', phoneNumber: '+18185551212'},
-    ],
-  };
+class ContactListScene extends Component<Props> {
+  componentWillMount() {
+    dataStore.subscribe(() => {
+      this.forceUpdate();
+    });
+  }
 
   render() {
-    let contactList = this.state.contactList;
-    let onContactCreated = (newContact: ContactDetail) => {
-      this.setState({
-        contactList: [...contactList, newContact],
-      });
-    };
+    let {contactList} = dataStore.getState();
     return (
       <View style={styles.container}>
         <View style={styles.title}>
@@ -37,7 +29,7 @@ class ContactListScene extends Component<Props, State> {
         {contactList.map(contact => (
           <Contact key={contact.name} contact={contact} />
         ))}
-        <CreateContactForm onContactCreated={onContactCreated} />
+        <CreateContactForm />
       </View>
     );
   }

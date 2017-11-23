@@ -2,14 +2,14 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
 
+import dataStore from './dataStore';
+
 type ContactDetail = {
   name: string,
   phoneNumber: string,
 };
 
-type Props = {
-  onContactCreated: (contact: ContactDetail) => void,
-};
+type Props = {};
 type State = {
   name: string,
   phoneNumber: string,
@@ -27,7 +27,10 @@ export default class Contact extends Component<Props, State> {
         name: this.state.name,
         phoneNumber: this.state.phoneNumber,
       };
-      this.props.onContactCreated(newContact);
+      dataStore.dispatch({
+        type: 'NEW_CONTACT',
+        newContact: newContact,
+      });
     };
     return (
       <View style={styles.container}>
