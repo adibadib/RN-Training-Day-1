@@ -1,4 +1,4 @@
 // @flow
-import MainScene from './src/RepoScene';
+import MainScene from './src/ContactListScene';
 
 export default MainScene;
