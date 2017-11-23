@@ -1,27 +1,46 @@
 // @flow
 import React, {Component} from 'react';
-import {View, Text, Alert, Platform, StyleSheet} from 'react-native';
-import Touchable from './Touchable';
-import Button from './Button';
+import {View, Text, Alert, Button, StyleSheet} from 'react-native';
 import Contact from './Contact';
+import CreateContactForm from './CreateContactForm';
 
-let contactList = [
-  {name: 'Simon', phoneNumber: '+19135381260'},
-  {name: 'Joe', phoneNumber: '+18185551212'},
-];
+type ContactDetail = {
+  name: string,
+  phoneNumber: string,
+};
 
-function ContactListScene() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.title}>
-        <Text style={styles.titleText}>Contact List</Text>
+type Props = {};
+type State = {
+  contactList: Array<ContactDetail>,
+};
+
+class ContactListScene extends Component<Props, State> {
+  state = {
+    contactList: [
+      {name: 'Simon', phoneNumber: '+19135381260'},
+      {name: 'Joe', phoneNumber: '+18185551212'},
+    ],
+  };
+
+  render() {
+    let contactList = this.state.contactList;
+    let onContactCreated = (newContact: ContactDetail) => {
+      this.setState({
+        contactList: [...contactList, newContact],
+      });
+    };
+    return (
+      <View style={styles.container}>
+        <View style={styles.title}>
+          <Text style={styles.titleText}>Contact List</Text>
+        </View>
+        {contactList.map(contact => (
+          <Contact key={contact.name} contact={contact} />
+        ))}
+        <CreateContactForm onContactCreated={onContactCreated} />
       </View>
-      {contactList.map(contact => (
-        <Contact key={contact.name} contact={contact} />
-      ))}
-      <Button label="Add New" onPress={() => console.log('add new')} />
-    </View>
-  );
+    );
+  }
 }
 
 let styles = StyleSheet.create({
